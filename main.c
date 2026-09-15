@@ -199,19 +199,6 @@ void countWords()
     printf("Lines: %d\n", lineCount);
     printf("Words: %d\n", words);
 }
-void stripNewline(char *str)
-{
-    while (*str != '\0')
-    {
-        if (*str == '\n')
-        {
-            *str = '\0';
-            break;
-        }
-        str++;
-    }
-}
-
 void saveFile()
 {
     FILE *file;
