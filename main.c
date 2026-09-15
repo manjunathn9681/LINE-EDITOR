@@ -199,3 +199,134 @@ void countWords()
     printf("Lines: %d\n", lineCount);
     printf("Words: %d\n", words);
 }
+void stripNewline(char *str)
+{
+    while (*str != '\0')
+    {
+        if (*str == '\n')
+        {
+            *str = '\0';
+            break;
+        }
+        str++;
+    }
+}
+
+void saveFile()
+{
+    FILE *file;
+    int i;
+
+    file = fopen("document.txt", "w");
+
+    if (file == NULL)
+    {
+        printf("Unable to save file.\n");
+        return;
+    }
+
+    for (i = 0; i < lineCount; i++)
+    {
+        fprintf(file, "%s\n", lines[i]);
+    }
+
+    fclose(file);
+
+    printf("Document saved as document.txt\n");
+}
+
+void printHelp()
+{
+    printf("\n========== COMMANDS ==========\n");
+    printf("insert <line>  - Insert a line\n");
+    printf("delete <line>  - Delete a line\n");
+    printf("display        - Display document\n");
+    printf("search <word>  - Search for a word\n");
+    printf("count          - Line and word count\n");
+    printf("save           - Save document\n");
+    printf("help           - Show commands\n");
+    printf("exit           - Exit editor\n");
+    printf("===============================\n\n");
+}
+int main()
+{
+    char input[300];
+    char text[MAX_LEN];
+    char word[MAX_LEN];
+    int lineNumber;
+
+    printLogo();
+    printHelp();
+
+    while (1)
+    {
+        printf("> ");
+
+        if (fgets(input, sizeof(input), stdin) == NULL)
+            break;
+
+        stripNewline(input);
+
+        /* INSERT */
+        if (sscanf(input, "insert %d", &lineNumber) == 1)
+        {
+            printf("Text: ");
+
+            fgets(text, sizeof(text), stdin);
+            stripNewline(text);
+
+            insertLine(lineNumber, text);
+        }
+
+        /* DELETE */
+        else if (sscanf(input, "delete %d", &lineNumber) == 1)
+        {
+            deleteLine(lineNumber);
+        }
+
+        /* DISPLAY */
+        else if (strcmp(input, "display") == 0)
+        {
+            displayLines();
+        }
+
+        /* SEARCH */
+        else if (sscanf(input, "search %s", word) == 1)
+        {
+            searchLines(word);
+        }
+
+        /* COUNT */
+        else if (strcmp(input, "count") == 0)
+        {
+            countWords();
+        }
+
+        /* SAVE */
+        else if (strcmp(input, "save") == 0)
+        {
+            saveFile();
+        }
+
+        /* HELP */
+        else if (strcmp(input, "help") == 0)
+        {
+            printHelp();
+        }
+
+        /* EXIT */
+        else if (strcmp(input, "exit") == 0)
+        {
+            printf("Goodbye!\n");
+            break;
+        }
+
+        /* INVALID */
+        else
+        {
+            printf("Invalid command. Type 'help'.\n");
+        }
+    }
+
+    return 0;
+}
